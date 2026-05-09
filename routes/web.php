@@ -2,16 +2,12 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
 Route::get('/', function () {
@@ -30,11 +26,8 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-// Rute ini hanya bisa diakses oleh user yang sudah login DAN memiliki role 'super_admin'
+// Rute khusus untuk Super Admin
 Route::middleware(['auth', 'super_admin'])->group(function () {
-    
-    Route::get('/admin/dashboard', function () {
-        return 'Selamat datang di Ruang Kendali Utama, Super Admin!';
-    })->name('admin.dashboard');
-
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::patch('/admin/verifications/{id}', [AdminController::class, 'updateStatus'])->name('admin.verifications.update');
 });
